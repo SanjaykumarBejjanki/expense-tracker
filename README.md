@@ -1,8 +1,6 @@
-
-
 # 💰 Expense Tracker
 
-A professional and responsive Expense Tracker web application built with HTML, CSS, and JavaScript.
+A professional and responsive Expense Tracker web application built with **HTML, CSS, and JavaScript**.
 
 The application helps users manage income and expenses, track their financial balance, search and filter transactions, and visualize spending through a dynamic expense chart.
 
@@ -22,7 +20,7 @@ Expense Tracker is a frontend web application designed to make personal expense 
 
 Users can add income and expense transactions, organize them by category, search and filter records, and view automatically calculated financial summaries.
 
-The application also uses browser LocalStorage so transaction data remains available after refreshing or reopening the website.
+The application uses browser **LocalStorage** so transaction data remains available after refreshing or reopening the website.
 
 ---
 
@@ -54,7 +52,7 @@ The application also uses browser LocalStorage so transaction data remains avail
 | JavaScript | Application logic and calculations |
 | Chart.js | Dynamic expense visualization |
 | LocalStorage | Persistent transaction data |
-| Font Awesome | Icons |
+| Font Awesome | UI icons |
 
 ---
 
@@ -89,7 +87,7 @@ This makes it easier to manage a large number of transactions.
 
 The application uses the browser's **LocalStorage API** to store transaction data.
 
-This means transactions remain available even after:
+This means transactions remain available after:
 
 - Refreshing the browser
 - Closing the browser
@@ -109,15 +107,15 @@ The chart automatically updates based on the user's actual expense data and cate
 
 ### Dashboard
 
-_Add your dashboard screenshot here._
+![Expense Tracker Dashboard](screenshots/dashboard.png)
 
 ### Add Transaction
 
-_Add your Add Transaction modal screenshot here._
+![Add Transaction](screenshots/add-transaction.png)
 
-### Expense Chart
+### Search & Filtering
 
-_Add your expense chart screenshot here._
+![Search and Filtering](screenshots/filtering.png)
 
 ---
 
@@ -129,7 +127,17 @@ expense-tracker/
 ├── index.html
 ├── style.css
 ├── script.js
-└── README.md
+├── README.md
+│
+└── screenshots/
+    ├── dashboard.png
+    ├── add-transaction.png
+    └── filtering.png
+```
+
+---
+
+## ▶️ How to Run
 
 ### Run Locally
 
@@ -137,3 +145,59 @@ expense-tracker/
 
 ```bash
 git clone https://github.com/SanjaykumarBejjanki/expense-tracker.git
+```
+
+2. Open the project folder:
+
+```bash
+cd expense-tracker
+```
+
+3. Open the project in **VS Code**.
+
+4. Open `index.html` using **Live Server**.
+
+---
+
+## 🚀 Deployment
+
+This project is deployed using:
+
+- Vercel
+- GitHub Pages
+
+### Live Application
+
+**Vercel:**  
+https://expense-tracker-gamma-neon.vercel.app/
+
+**GitHub Pages:**  
+https://sanjaykumarbejjanki.github.io/expense-tracker/
+
+---
+
+## 🔮 Future Improvements
+
+- 🌙 Dark/Light mode
+- ✏️ Edit existing transactions
+- 📥 Export transactions to CSV
+- 📅 Monthly and yearly reports
+- 💰 Budget management
+- 📊 Advanced financial analytics
+- ☁️ Cloud database integration
+- 🔐 User authentication
+
+---
+
+## 👨‍💻 Author
+
+### Sanjay Kumar
+
+**B.Tech — Computer Science & Engineering (AI & ML)**
+
+GitHub:  
+https://github.com/SanjaykumarBejjanki
+
+---
+
+⭐ If you found this project useful, consider giving it a star!
