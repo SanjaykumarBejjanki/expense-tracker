@@ -581,6 +581,26 @@ button {
     background: #10b981;
 }
 
+.entertainment {
+    background: #ef4444;
+}
+
+.health {
+    background: #ec4899;
+}
+
+.education {
+    background: #06b6d4;
+}
+
+.salary {
+    background: #84cc16;
+}
+
+.other {
+    background: #64748b;
+}
+
 
 /* =========================
    QUICK SUMMARY

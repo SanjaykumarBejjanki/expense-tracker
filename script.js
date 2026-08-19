@@ -34,6 +34,7 @@ const totalBalance = document.getElementById("totalBalance");
 const totalIncome = document.getElementById("totalIncome");
 const totalExpense = document.getElementById("totalExpense");
 const chartTotal = document.getElementById("chartTotal");
+const chartCircle = document.querySelector(".chart-circle");
 const transactionCount = document.getElementById("transactionCount");
 const monthlyExpense = document.getElementById("monthlyExpense");
 const averageExpense = document.getElementById("averageExpense");
@@ -42,7 +43,12 @@ const categoryAmountElements = {
     food: document.getElementById("foodAmount"),
     transport: document.getElementById("transportAmount"),
     shopping: document.getElementById("shoppingAmount"),
-    bills: document.getElementById("billsAmount")
+    bills: document.getElementById("billsAmount"),
+    entertainment: document.getElementById("entertainmentAmount"),
+    health: document.getElementById("healthAmount"),
+    education: document.getElementById("educationAmount"),
+    salary: document.getElementById("salaryAmount"),
+    other: document.getElementById("otherAmount")
 };
 
 const loginOverlay = document.getElementById("loginOverlay");
@@ -435,8 +441,10 @@ function updateSummary() {
         expenses.length ? expenseTotal / expenses.length : 0
     );
 
+    const categoryTotals = {};
+
     Object.keys(categoryAmountElements).forEach(function (category) {
-        const categoryTotal = expenses
+        categoryTotals[category] = expenses
             .filter(function (transaction) {
                 return transaction.category === category;
             })
@@ -444,8 +452,38 @@ function updateSummary() {
                 return total + transaction.amount;
             }, 0);
 
-        categoryAmountElements[category].textContent = formattedCurrency(categoryTotal);
+        categoryAmountElements[category].textContent = formattedCurrency(
+            categoryTotals[category]
+        );
     });
+
+    const chartColors = {
+        food: "#6366f1",
+        transport: "#8b5cf6",
+        shopping: "#f59e0b",
+        bills: "#10b981",
+        entertainment: "#ef4444",
+        health: "#ec4899",
+        education: "#06b6d4",
+        salary: "#84cc16",
+        other: "#64748b"
+    };
+
+    let chartAngle = 0;
+    const chartStops = Object.keys(categoryTotals).map(function (category) {
+        const categoryAngle = expenseTotal
+            ? (categoryTotals[category] / expenseTotal) * 360
+            : 0;
+        const endAngle = chartAngle + categoryAngle;
+        const stop = `${chartColors[category]} ${chartAngle}deg ${endAngle}deg`;
+
+        chartAngle = endAngle;
+        return stop;
+    });
+
+    chartCircle.style.background = expenseTotal
+        ? `conic-gradient(${chartStops.join(", ")})`
+        : "#e5e7eb";
 
 }
 
