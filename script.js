@@ -30,6 +30,21 @@ const emptyState = document.getElementById("emptyState");
 const transactionBadge = document.getElementById("transactionBadge");
 const logoutBtn = document.getElementById("logoutBtn");
 
+const totalBalance = document.getElementById("totalBalance");
+const totalIncome = document.getElementById("totalIncome");
+const totalExpense = document.getElementById("totalExpense");
+const chartTotal = document.getElementById("chartTotal");
+const transactionCount = document.getElementById("transactionCount");
+const monthlyExpense = document.getElementById("monthlyExpense");
+const averageExpense = document.getElementById("averageExpense");
+
+const categoryAmountElements = {
+    food: document.getElementById("foodAmount"),
+    transport: document.getElementById("transportAmount"),
+    shopping: document.getElementById("shoppingAmount"),
+    bills: document.getElementById("billsAmount")
+};
+
 const loginOverlay = document.getElementById("loginOverlay");
 const loginForm = document.getElementById("loginForm");
 const otpForm = document.getElementById("otpForm");
@@ -44,7 +59,9 @@ const backLoginBtn = document.getElementById("backLoginBtn");
 // APPLICATION DATA
 // ===============================
 
-let transactions = [];
+let transactions = JSON.parse(
+    localStorage.getItem("expenseTrackerTransactions") || "[]"
+);
 
 let currentType = "expense";
 
@@ -205,22 +222,17 @@ document.addEventListener("keydown", function (event) {
 // TRANSACTION TYPE
 // ===============================
 
-expenseTypeBtn.addEventListener("click", function () {
+document.querySelectorAll(".type-btn").forEach(function (button) {
 
-    currentType = "expense";
+    button.addEventListener("click", function () {
 
-    expenseTypeBtn.classList.add("active");
-    incomeTypeBtn.classList.remove("active");
+        currentType = button.dataset.type;
 
-});
+        document.querySelectorAll(".type-btn").forEach(function (typeButton) {
+            typeButton.classList.toggle("active", typeButton === button);
+        });
 
-
-incomeTypeBtn.addEventListener("click", function () {
-
-    currentType = "income";
-
-    incomeTypeBtn.classList.add("active");
-    expenseTypeBtn.classList.remove("active");
+    });
 
 });
 
@@ -236,7 +248,7 @@ transactionForm.addEventListener("submit", function (event) {
 
     // Get form values
 
-    const title = transactionTitle.value.trim();
+    const title = String(transactionTitle.value || "").trim();
 
     const amount = Number(transactionAmount.value);
 
@@ -297,6 +309,10 @@ transactionForm.addEventListener("submit", function (event) {
     // Add transaction to array
 
     transactions.push(transaction);
+    localStorage.setItem(
+        "expenseTrackerTransactions",
+        JSON.stringify(transactions)
+    );
 
 
     // Display transaction
@@ -321,6 +337,8 @@ transactionForm.addEventListener("submit", function (event) {
 // ===============================
 
 function renderTransactions() {
+
+    updateSummary();
 
     transactionBadge.textContent =
         `${transactions.length} ${transactions.length === 1 ? "Transaction" : "Transactions"}`;
@@ -363,6 +381,70 @@ function renderTransactions() {
 
         transactionList.appendChild(transactionElement);
 
+    });
+
+}
+
+
+// ===============================
+// UPDATE CALCULATIONS
+// ===============================
+
+function updateSummary() {
+
+    const income = transactions
+        .filter(function (transaction) {
+            return transaction.type === "income";
+        })
+        .reduce(function (total, transaction) {
+            return total + transaction.amount;
+        }, 0);
+
+    const expenses = transactions
+        .filter(function (transaction) {
+            return transaction.type === "expense";
+        });
+
+    const expenseTotal = expenses.reduce(function (total, transaction) {
+        return total + transaction.amount;
+    }, 0);
+
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const currentMonthExpense = expenses
+        .filter(function (transaction) {
+            return transaction.date.slice(0, 7) === currentMonth;
+        })
+        .reduce(function (total, transaction) {
+            return total + transaction.amount;
+        }, 0);
+
+    const formattedCurrency = function (amount) {
+        return `₹${amount.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    };
+
+    totalBalance.textContent = formattedCurrency(income - expenseTotal);
+    totalIncome.textContent = formattedCurrency(income);
+    totalExpense.textContent = formattedCurrency(expenseTotal);
+    chartTotal.textContent = formattedCurrency(expenseTotal);
+    transactionCount.textContent = transactions.length;
+    monthlyExpense.textContent = formattedCurrency(currentMonthExpense);
+    averageExpense.textContent = formattedCurrency(
+        expenses.length ? expenseTotal / expenses.length : 0
+    );
+
+    Object.keys(categoryAmountElements).forEach(function (category) {
+        const categoryTotal = expenses
+            .filter(function (transaction) {
+                return transaction.category === category;
+            })
+            .reduce(function (total, transaction) {
+                return total + transaction.amount;
+            }, 0);
+
+        categoryAmountElements[category].textContent = formattedCurrency(categoryTotal);
     });
 
 }
@@ -413,7 +495,7 @@ function createTransactionElement(transaction) {
 
             <div class="transaction-details">
 
-                <h3>${escapeHTML(transaction.title)}</h3>
+                <h3 class="transaction-title">${escapeHTML(String(transaction.title || "Untitled transaction"))}</h3>
 
                 <p>
                     ${categoryName} • ${formattedDate}
@@ -541,6 +623,11 @@ function deleteTransaction(id) {
             return transaction.id !== id;
 
         });
+
+    localStorage.setItem(
+        "expenseTrackerTransactions",
+        JSON.stringify(transactions)
+    );
 
 
     renderTransactions();
